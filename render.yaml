@@ -1,10 +1,3 @@
-databases:
-  - name: keycloak-db
-    databaseName: keycloak
-    user: keycloak
-    plan: free
-    region: oregon
-
 services:
   - type: web
     name: keycloak
@@ -15,33 +8,21 @@ services:
     envVars:
       - key: KC_DB
         value: postgres
-      - key: KC_DB_URL_HOST
-        fromDatabase:
-          name: keycloak-db
-          property: host
-      - key: KC_DB_URL_PORT
-        fromDatabase:
-          name: keycloak-db
-          property: port
-      - key: KC_DB_URL_DATABASE
-        fromDatabase:
-          name: keycloak-db
-          property: database
+      - key: KC_DB_URL
+        sync: false # e.g. jdbc:postgresql://db.<project-ref>.supabase.co:5432/postgres?sslmode=require
       - key: KC_DB_USERNAME
-        fromDatabase:
-          name: keycloak-db
-          property: user
+        sync: false # e.g. postgres (or postgres.<project-ref> if pooler)
       - key: KC_DB_PASSWORD
-        fromDatabase:
-          name: keycloak-db
-          property: password
+        sync: false # Supabase database password
+      - key: KC_DB_SCHEMA
+        value: keycloak # Keeps Keycloak tables isolated from Backstage tables in Supabase
       - key: KC_HTTP_ENABLED
         value: "true"
       - key: KC_PROXY_HEADERS
         value: "xforwarded"
+      - key: KC_HOSTNAME_STRICT
+        value: "false"
       - key: KEYCLOAK_ADMIN
         value: admin
       - key: KEYCLOAK_ADMIN_PASSWORD
         generateValue: true
-      - key: KC_HOSTNAME_STRICT
-        value: "false"
